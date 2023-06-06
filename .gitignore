@@ -1,0 +1,6 @@
+data.txt
+data1.txt
+.idea
+__pycache__
+scenes/__pycache__
+gesture_recognizer.task
