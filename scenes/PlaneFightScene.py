@@ -31,7 +31,7 @@ class Player(pygame.sprite.Sprite):
                 player_rect[i]).convert_alpha())
         self.rect = player_rect[0]  # 初始化图片所在的矩形
         self.rect.topleft = init_pos  # 初始化矩形的左上角坐标
-        self.speed = 8  # 初始化玩家飞机速度，这里是一个确定的值
+        self.speed = 9  # 初始化玩家飞机速度，这里是一个确定的值
         self.bullets = pygame.sprite.Group()  # 玩家飞机所发射的子弹的集合
         self.is_hit = False  # 玩家是否被击中
 
@@ -54,7 +54,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.topleft = init_pos
         self.rect.top -= self.rect.height
         self.down_imgs = enemy_down_imgs
-        self.speed = 1
+        self.speed = 5
 
     # 敌机移动，边界判断及删除在游戏主循环里处理
     def move(self):
@@ -128,16 +128,13 @@ class PlaneFightScene(Scene):
         # 生成子弹，需要控制发射频率
         # 首先判断玩家飞机没有被击中
         if not self.player.is_hit:
-            if self.shoot_frequency % 15 == 0:
+            #竖起大拇指发射子弹
+            if self.shoot_frequency % 5 == 0 and self.gameManager.getIsThumbUp():
                 # 循环15次发射一个子弹
                 self.player.shoot(self.bullet_img)
-
-            # 5t玩家可操作一次
-            # self.isMoving = (self.shoot_frequency % 5 == 0)
-
+                self.shoot_frequency=0
             self.shoot_frequency += 1
-            if self.shoot_frequency >= 15:
-                shoot_frequency = 0
+
 
         # 生成敌机，需要控制生成频率
         # 循环50次生成一架敌机

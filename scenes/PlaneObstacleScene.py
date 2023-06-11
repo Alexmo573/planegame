@@ -13,11 +13,11 @@ class Player(pygame.sprite.Sprite):
             img = (plane_img.subsurface(
                 player_rect[i]).convert_alpha())
             imgRect: 'pygame.Rect' = img.get_rect()
-            self.image.append(pygame.transform.scale(img, (imgRect.w / 2, imgRect.h / 2)))
+            self.image.append(pygame.transform.scale(img, (imgRect.w, imgRect.h)))
         self.rect = self.image[0].get_rect()  # 初始化图片所在的矩形
         self.rect.height -= 20
         self.rect.topleft = init_pos  # 初始化矩形的左上角坐标
-        self.speed = 8  # 初始化玩家飞机速度，这里是一个确定的值
+        self.speed = 9  # 初始化玩家飞机速度，这里是一个确定的值
         self.bullets = pygame.sprite.Group()  # 玩家飞机所发射的子弹的集合
         self.is_hit = False  # 玩家是否被击中
 
@@ -34,7 +34,7 @@ class obstacle_brick(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = init_pos
         self.rect.top -= self.rect.height
-        self.speed = 1
+        self.speed = 5
 
     def move(self):
         self.rect.top += self.speed
@@ -56,7 +56,7 @@ class obstacle(pygame.sprite.Sprite):
         self.right_len = gap_pos + gap_len
         self.img_rect = self.image.get_rect()
         # self.rect.topleft=gap_pos
-        self.speed = 1
+        #self.speed = 1
         self.screen = screen
         self.arrange()
         # 记录飞机是否已经越过本障碍物
@@ -116,7 +116,7 @@ class PlaneObstacleScene(Scene):
 
         # 随机频率的标志
         self.time_isUsed = False
-        self.times = 200
+        self.times = 0
         # 存储障碍，管理多个对象
         self.obstacles = pygame.sprite.Group()
         # obstacle生成频率
@@ -173,15 +173,17 @@ class PlaneObstacleScene(Scene):
         # 循环50次生成一个障碍
         if self.time_isUsed:
             # 从新生成一个随机频率，标志改变
-            times = random.randint(100, 300)
+            self.times = random.randint(55, 85)
             self.time_isUsed = False
-        if self.obstacle_frequency % self.times == 0:
+        if self.obstacle_frequency == self.times:
             # 标志为已使用
             self.time_isUsed = True
             # 频率计数为0
             self.obstacle_frequency = 0
 
-            gap_len = random.randint(10, 55) + 65
+            # gap_len = random.randint(10, 55) + 65
+            # gap_start = random.randint(0, SCREEN_WIDTH - gap_len)
+            gap_len = random.randint(20, self.player.rect.width) + self.player.rect.width
             gap_start = random.randint(0, SCREEN_WIDTH - gap_len)
             obstacle_1 = obstacle(self.obstacle_img, gap_start, gap_len, self.gameManager.screen)
             self.obstacles.add(obstacle_1)
